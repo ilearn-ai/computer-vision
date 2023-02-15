@@ -1,0 +1,12 @@
+README.md
+pyproject.toml
+manipulate_depthmap/__init__.py
+manipulate_depthmap.egg-info/PKG-INFO
+manipulate_depthmap.egg-info/SOURCES.txt
+manipulate_depthmap.egg-info/dependency_links.txt
+manipulate_depthmap.egg-info/top_level.txt
+manipulate_depthmap/examples/depthmap_filling.py
+manipulate_depthmap/hole_filling_methods/__init__.py
+manipulate_depthmap/hole_filling_methods/interpolation_methods.py
+manipulate_depthmap/utilities/__init__.py
+manipulate_depthmap/utilities/plot_utilities.py
