@@ -1,6 +1,5 @@
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 from manipulate_depthmap.hole_filling_methods.interpolation_methods import (
