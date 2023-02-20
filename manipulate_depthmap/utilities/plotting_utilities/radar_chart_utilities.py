@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 def _invert(x, limits):
@@ -29,7 +28,7 @@ def _scale_data(data, ranges):
             d = _invert(d, (y1, y2))
             y1, y2 = y2, y1
 
-        sdata.append((d- y1) / (y2-y1) * (x2 - x1) + x1)
+        sdata.append((d - y1) / (y2 - y1) * (x2 - x1) + x1)
 
     return sdata
 
@@ -53,9 +52,6 @@ def set_rgrids(self, radii, labels=None, angle=None, fmt=None,
     # Make sure we take into account unitized data
     radii = self.convert_xunits(radii)
     radii = np.asarray(radii)
-    rmin = radii.min()
-    # if rmin <= 0:
-    #     raise ValueError('radial grids must be strictly positive')
 
     self.set_yticks(radii)
     if labels is not None:
@@ -75,17 +71,16 @@ class ComplexRadar():
                  n_ordinate_levels=6):
         angles = np.arange(0, 360, 360./len(variables))
 
-        axes = [fig.add_axes([0.1, 0.1, .8, .8], polar=True,
-            label="axes{}".format(i))
-            for i in range(len(variables))]
-        l, text = axes[0].set_thetagrids(angles, 
-                                         labels=variables)
+        axes = [fig.add_axes([0.1, 0.1, .8, .8], polar=True, label="axes{}".format(i)) for i in range(len(variables))]
+        l, text = axes[0].set_thetagrids(angles, labels=variables)
         [txt.set_rotation(angle - 90) for txt, angle 
              in zip(text, angles)]
+
         for ax in axes[1:]:
             ax.patch.set_visible(False)
             ax.grid("off")
             ax.xaxis.set_visible(False)
+
         for i, ax in enumerate(axes):
             grid = np.linspace(*ranges[i], 
                                num=n_ordinate_levels)
@@ -95,9 +90,7 @@ class ComplexRadar():
                 grid = grid[::-1] # hack to invert grid
                           # gridlabels aren't reversed
             gridlabel[0] = "" # clean up origin
-            # ax.set_rgrids(grid, labels=gridlabel, angle=angles[i])
             set_rgrids(ax, grid, labels=gridlabel, angle=angles[i])
-            #ax.spines["polar"].set_visible(False)
             ax.set_ylim(*ranges[i])
         # variables for plotting
         self.angle = np.deg2rad(np.r_[angles, angles[0]])
