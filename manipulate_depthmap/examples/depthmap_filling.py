@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import cv2
-import matplotlib.pyplot as plt
 import pandas as pd
 
 from manipulate_depthmap.hole_filling_methods.inpainting_methods import \
