@@ -3,12 +3,14 @@ from pathlib import Path
 import cv2
 import pandas as pd
 
-from manipulate_depthmap.hole_filling_methods.inpainting_methods import \
-    InpaintingMethod
+from manipulate_depthmap.hole_filling_methods.inpaint_methods.patch_based import \
+    PatchInpaintMethod
+from manipulate_depthmap.hole_filling_methods.inpaint_methods.diffusion_based import \
+    DiffusionInpaintMethod
 from manipulate_depthmap.hole_filling_methods.interpolation_methods import \
     InterpolationMethod
 from manipulate_depthmap.utilities.plottings import \
-    plot_depth_map_from_img_dataframe
+    plot_depth_map_from_img_dataframe, compare_methods_metrics
 
 image_name = "Rosemary"
 
@@ -32,12 +34,18 @@ filled_depth_map_interpol = interpolation_method.fill_holes(depth_map=sparse_map
 interpolation_method.calculate_metrics(depth_map=filled_depth_map_interpol, ground_truth=ground_truth)
 plot_depth_map_from_img_dataframe(filled_depth_map_interpol)
 
-# Filling through inpainting
+# Filling through patch inpainting
 inpaint_radius = 2
-inpainting_method = InpaintingMethod(inpaint_radius=inpaint_radius)
-filled_depth_map_inpaint = inpainting_method.fill_holes(depth_map=sparse_map)
-inpainting_method.calculate_metrics(depth_map=filled_depth_map_inpaint, ground_truth=ground_truth)
-plot_depth_map_from_img_dataframe(filled_depth_map_inpaint)
+patch_inpaint_method = PatchInpaintMethod(inpaint_radius=inpaint_radius)
+filled_depth_map_patch_inpaint = patch_inpaint_method.fill_holes(depth_map=sparse_map)
+patch_inpaint_method.calculate_metrics(depth_map=filled_depth_map_patch_inpaint, ground_truth=ground_truth)
+plot_depth_map_from_img_dataframe(filled_depth_map_patch_inpaint)
 
-interpolation_method.plot_metrics()
-inpainting_method.plot_metrics()
+# Filling through diffusion inpainting
+diffusion_inpaint_method = DiffusionInpaintMethod()
+filled_depth_map_diffusion_inpaint = diffusion_inpaint_method.fill_holes(depth_map=sparse_map)
+diffusion_inpaint_method.calculate_metrics(depth_map=filled_depth_map_diffusion_inpaint, ground_truth=ground_truth)
+plot_depth_map_from_img_dataframe(filled_depth_map_diffusion_inpaint)
+
+methods_studied = [interpolation_method, patch_inpaint_method, diffusion_inpaint_method]
+compare_methods_metrics(methods_studied)
