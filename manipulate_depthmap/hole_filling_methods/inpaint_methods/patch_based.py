@@ -6,10 +6,10 @@ from manipulate_depthmap.hole_filling_methods.fill_depth_map_parent import \
     FillDepthMap
 
 
-class InpaintingMethod(FillDepthMap):
+class PatchInpaintMethod(FillDepthMap):
     def __init__(self, inpaint_radius):
         self.inpaint_radius = inpaint_radius
-        super().__init__("inpainting")
+        super().__init__("patch_inpaint")
 
     def fill_holes(self, depth_map: pd.DataFrame) -> np.ndarray:
         depth_map = self.validate_input_depth_map(depth_map)
