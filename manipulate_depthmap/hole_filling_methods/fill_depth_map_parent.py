@@ -1,11 +1,15 @@
+import time
 from typing import Union
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+from skimage.metrics import (mean_squared_error, normalized_root_mse,
+                             structural_similarity)
 
 from manipulate_depthmap.utilities.auxiliar_methods import round_up_100
-from manipulate_depthmap.utilities.plotting_utilities.radar_chart_utilities import ComplexRadar
+from manipulate_depthmap.utilities.plotting_utilities.radar_chart_utilities import \
+    ComplexRadar
 
 
 class FillDepthMap:
@@ -15,9 +19,17 @@ class FillDepthMap:
             "mse": np.nan,
             "rmse": np.nan,
             "mae": np.nan,
+            "ssim": np.nan,
+            "elapsed time": np.nan,
         }
 
-    def fill_holes(self, depth_map):
+    def fill_holes_with_timer(self, depth_map):
+        start_time = time.time()
+        filled_depth_map = self._fill_holes(depth_map)
+        self.metrics["elapsed time"] = time.time() - start_time
+        return filled_depth_map
+
+    def _fill_holes(self, depth_map):
         raise NotImplementedError("Method not implemented")
 
     def validate_input_depth_map(self, depth_map):
@@ -36,12 +48,15 @@ class FillDepthMap:
 
         return depth_map
 
-    def calculate_metrics(self, depth_map: Union[pd.DataFrame, np.ndarray], ground_truth: pd.DataFrame) -> None:
+    def calculate_metrics(
+        self, depth_map: Union[pd.DataFrame, np.ndarray], ground_truth: pd.DataFrame
+    ) -> None:
         depth_map = self.validate_input_depth_map(depth_map)
         ground_truth = ground_truth.values
-        self.metrics['mse'] = np.mean(np.square(ground_truth - depth_map))
-        self.metrics['rmse'] = np.sqrt(self.metrics['mse'])
-        self.metrics['mae'] = np.mean(np.abs(ground_truth - depth_map))
+        self.metrics["mse"] = mean_squared_error(ground_truth, depth_map)
+        self.metrics["rmse"] = normalized_root_mse(ground_truth, depth_map)
+        self.metrics["mae"] = np.mean(np.abs(ground_truth - depth_map))
+        self.metrics["ssim"] = structural_similarity(ground_truth, depth_map)
 
     def plot_metrics(self) -> None:
         kpis = self.metrics.keys()
@@ -49,13 +64,12 @@ class FillDepthMap:
 
         if np.any(np.isnan(scores)):
             raise ValueError("Make sure that performance metrics have been calculated!")
-        
+
         method = self.name
-        ranges = [(0, round_up_100(kpi_score)) for kpi_score in scores]     
+        ranges = [(0, round_up_100(kpi_score)) for kpi_score in scores]
         fig = plt.figure(figsize=(6, 6))
         radar = ComplexRadar(fig, kpis, ranges)
         radar.plot(scores)
         radar.fill(scores, alpha=0.2)
         plt.legend(f"{method}")
         plt.show()
-        
