@@ -1,25 +1,28 @@
 from typing import List
+import d
 
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import colors as mcolors
 
-from manipulate_depthmap.hole_filling_methods.fill_depth_map_parent import \
-    FillDepthMap
+from manipulate_depthmap.hole_filling_methods.fill_depth_map_parent import FillDepthMap
 from manipulate_depthmap.utilities.auxiliar_methods import round_up_100
-from manipulate_depthmap.utilities.plotting_utilities.radar_chart_utilities import \
-    ComplexRadar
+from manipulate_depthmap.utilities.plotting_utilities.radar_chart_utilities import (
+    ComplexRadar,
+)
 
 colors = list(mcolors.TABLEAU_COLORS)
 
 
-def plot_depth_map_from_img_dataframe(img_dataframe):
+def plot_depth_map_from_img_dataframe(img_dataframe: pd.DataFrame) -> None:
     plt.matshow(img_dataframe)
     plt.colorbar()
     plt.show()
 
 
-def plot_both_sparse_and_ground_truth(img_dataframe, ground_truth_dataframe):
+def plot_both_sparse_and_ground_truth(
+    img_dataframe: pd.DataFrame, ground_truth_dataframe: pd.DataFrame
+) -> None:
     pass
 
 
